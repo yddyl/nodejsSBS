@@ -16,7 +16,7 @@ var jsonWrite = function (res, ret) {
         res.json(ret);
     }
 };
-var jtoArray =function (res,ret) {
+var jtoArrayPace =function (res,ret) {
     if(typeof ret === 'undefined') {
         res.json({
             code:'1',
@@ -25,10 +25,31 @@ var jtoArray =function (res,ret) {
     }else {
         var arr = [];
         var data = ret[0];
+        var distance;
+        var pace;
         for (var i in data) {
-            var time = i;
-            var pace = data[i];
-            arr.push({time, pace});
+            distance = i;
+            pace = data[i];
+            arr.push({distance, pace});
+        }
+        res.json(arr);
+    }
+};
+var jtoArraySpeed =function (res,ret) {
+    if(typeof ret === 'undefined') {
+        res.json({
+            code:'1',
+            msg: 'ret undefined'
+        });
+    }else {
+        var arr = [];
+        var data = ret[0];
+        var speed;
+        var distance;
+        for (var i in data) {
+            distance = i;
+            speed = 1/data[i]*60;
+            arr.push({distance, speed});
         }
         res.json(arr);
     }
@@ -118,21 +139,33 @@ module.exports = {
             });
         });
     },
-
-
+    //getPace
     getPace: function (req, res, next) {
         var id = req.query.id;
         var match=+req.query.match;
         pool.getConnection(function(err, connection) {
             if (err) throw err;
             connection.query($sql.getPace,[id,match], function(err, result) {
-             //   console.log(result);
-                jtoArray(res,result);
+                jtoArrayPace(res,result);
                //jsonWrite(res, result);
                 connection.release();
             });
         });
     },
+    //getSpeed
+    getSpeed: function (req, res, next) {
+        var id = req.query.id;
+        var match=+req.query.match;
+        pool.getConnection(function(err, connection) {
+            if (err) throw err;
+            connection.query($sql.getPace,[id,match], function(err, result) {
+                jtoArraySpeed(res,result);
+                //jsonWrite(res, result);
+                connection.release();
+            });
+        });
+    },
+    //bestTime
     bestTime: function (req, res, next) {
         var id = req.query.id;
         pool.getConnection(function(err, connection) {
@@ -143,11 +176,25 @@ module.exports = {
             });
         });
     },
+    //bestRank
     bestRank: function (req, res, next) {
         var id = req.query.id;
         pool.getConnection(function(err, connection) {
             if (err) throw err;
             connection.query($sql.bestRank,id, function(err, result) {
+                jsonWrite(res, result);
+                connection.release();
+            });
+        });
+    },
+    //avgminByMatch
+    avgminByMatch: function (req, res, next) {
+        var id =+req.query.id;
+
+        pool.getConnection(function(err, connection) {
+            if (err) throw err;
+            connection.query($sql.avgminByMatch,id, function(err, result) {
+                console.log(id);
                 jsonWrite(res, result);
                 connection.release();
             });
