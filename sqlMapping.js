@@ -25,7 +25,7 @@ var user = {
     //getSpeed:'SELECT (time_to_sec(5km)/60)/5 AS 0to5, ((time_to_sec(10km)-time_to_sec(5km))/60)/5 AS 5to10,((time_to_sec(15km)-time_to_sec(10km))/60)/5 AS 10to15, ((time_to_sec(20km)-time_to_sec(15km))/60)/5 AS 15to20, ((time_to_sec(25km)-time_to_sec(20km))/60)/5 AS 20to25,((time_to_sec(30km)-time_to_sec(25km))/60)/5 AS 25to30, ((time_to_sec(35km)-time_to_sec(30km))/60)/5 AS 30to35, ((time_to_sec(40km)-time_to_sec(35km))/60)/5 AS 35to40, ((time_to_sec(42km)-time_to_sec(40km))/60)/2.195 AS 40to45   FROM malasong.malasong_chengji where IDnumber=? And matchid=?',
     bestTime:'select malasong.malasong_bisai.*,malasong_chengji.*from malasong.malasong_chengji,malasong.malasong_bisai where malasong_bisai.matchid =malasong_chengji.matchid AND malasong.malasong_chengji.IDnumber=? order by finalrecord limit 1',
     bestRank:'select (rank/(select totalNum from malasong.malasong_bisai where malasong_chengji.matchid=malasong_bisai.matchid)) AS newRank,(time_to_sec(finalrecord)/60) as finalrecordMins,rank,totalNum,malasong_bisai.*,malasong_chengji.*from malasong.malasong_chengji,malasong.malasong_bisai where malasong_bisai.matchid =malasong_chengji.matchid AND malasong_chengji.IDnumber=? order by newRank limit 10',
-    avgminByMatch:'select matchid,class,SEC_TO_TIME(avg(time_to_sec(finalrecord))) as average,SEC_TO_TIME(min(time_to_sec(finalrecord))) as minimum from malasong.malasong_chengji where matchid=? group by class'
+    avgminByMatch:'select matchid,class,SEC_TO_TIME(std(time_to_sec(finalrecord))) as std, SEC_TO_TIME(avg(time_to_sec(finalrecord))) as average,SEC_TO_TIME(min(time_to_sec(finalrecord))) as minimum from malasong.malasong_chengji where matchid=? group by class'
 };
 
 module.exports = user;

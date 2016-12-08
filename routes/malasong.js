@@ -1,5 +1,6 @@
 var express = require('express');
 var router = express.Router();
+var app=express();
 var malasong= require('../models/Marathon');
 /* GET users listing. */
 router.get('/', function(req, res, next) {
@@ -38,5 +39,7 @@ router.get('/bestRank', function(req, res, next) {
 router.get('/avgminByMatch', function(req, res, next) {
     malasong.avgminByMatch(req, res, next);
 });
+// images: /course/20140006.png for 路线图， /logo/20140006.png for logo
+app.use(express.static('public'));
 
 module.exports = router;
