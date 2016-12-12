@@ -9,7 +9,7 @@ var user = {
     renByName: 'select * from malasong_ren where name=?',
 
     //个人所有参赛成绩 by IDnumber
-    chengjiById:'select malasong_bisai.mdate, (time_to_sec(finalrecord)/60) as finalrecordMins, malasong.malasong_bisai.*,malasong_chengji.*from malasong.malasong_chengji,malasong.malasong_bisai where malasong_bisai.matchid =malasong_chengji.matchid AND malasong.malasong_chengji.IDnumber=? order by malasong_bisai.mdate;',
+    chengjiById:'select (rank/(select totalNum from malasong.malasong_bisai where malasong_chengji.matchid=malasong_bisai.matchid)) AS newRank, malasong_bisai.mdate, (time_to_sec(finalrecord)/60) as finalrecordMins, malasong.malasong_bisai.*,malasong_chengji.*from malasong.malasong_chengji,malasong.malasong_bisai where malasong_bisai.matchid =malasong_chengji.matchid AND malasong.malasong_chengji.IDnumber=? order by malasong_bisai.mdate;',
     //单个比赛 全部信息，包括选手名字
     chengjiByMatch:'SELECT malasong.malasong_ren.name,malasong.malasong_ren.gender, malasong.malasong_chengji.* FROM malasong.malasong_chengji, malasong.malasong_ren WHERE malasong_chengji.IDnumber=malasong_ren.IDnumber AND malasong_chengji.matchid=? ORDER BY rank limit 400',
 
