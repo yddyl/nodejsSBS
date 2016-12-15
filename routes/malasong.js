@@ -39,6 +39,12 @@ router.get('/bestRank', function(req, res, next) {
 router.get('/avgminByMatch', function(req, res, next) {
     malasong.avgminByMatch(req, res, next);
 });
+router.get('/avgPaceById', function(req, res, next) {
+    malasong.avgPaceById(req, res, next);
+});
+router.get('/avgRecordById', function(req, res, next) {
+    malasong.avgRecordById(req, res, next);
+});
 // images: /course/20140006.png for 路线图， /logo/20140006.png for logo
 app.use(express.static('public'));
 

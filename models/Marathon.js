@@ -54,6 +54,33 @@ var jtoArraySpeed =function (res,ret) {
         res.json(arr);
     }
 };
+var jtoArrayAvg =function (res,ret) {
+    if(typeof ret === 'undefined') {
+        res.json({
+            code:'1',
+            msg: 'ret undefined'
+        });
+    }else {
+        var arr = [];
+        var data;
+        for(var t in ret) {
+            data=ret[t];
+            for (var i in data) {
+                title = i;
+                content = data[i];
+                if (i == "std"||i=="average"||i=="minimum") {
+                    var hms = content.split(':');
+                    minutes = (+hms[0]) * 60 + (+hms[1]) + ((+hms[2]) / 60);
+                    var display = content;
+                    var value = minutes;
+                    data[i] = {display, value};
+                }
+            }
+            arr.push(data);
+        }
+        res.json(arr);
+    }
+};
 
 module.exports = {
     //BiSaiAll
@@ -188,16 +215,45 @@ module.exports = {
         });
     },
     //avgminByMatch
-    avgminByMatch: function (req, res, next) {
+    /*avgminByMatch: function (req, res, next) {
         var id =+req.query.id;
-
         pool.getConnection(function(err, connection) {
             if (err) throw err;
             connection.query($sql.avgminByMatch,id, function(err, result) {
-                console.log(id);
                 jsonWrite(res, result);
                 connection.release();
             });
         });
-    }
+    },*/
+    avgminByMatch: function (req, res, next) {
+        var id =+req.query.id;
+        pool.getConnection(function(err, connection) {
+            if (err) throw err;
+            connection.query($sql.avgminByMatch,id, function(err, result) {
+                jtoArrayAvg(res,result);
+                connection.release();
+            });
+        });
+    },
+    avgPaceById: function (req, res, next) {
+        var id =req.query.id;
+        pool.getConnection(function(err, connection) {
+            if (err) throw err;
+            connection.query($sql.avgPaceById,id, function(err, result) {
+                jsonWrite(res,result);
+                connection.release();
+            });
+        });
+    },
+    //avgRecordById
+    avgRecordById: function (req, res, next) {
+        var id =req.query.id;
+        pool.getConnection(function(err, connection) {
+            if (err) throw err;
+            connection.query($sql.avgRecordById,id, function(err, result) {
+                jsonWrite(res,result);
+                connection.release();
+            });
+        });
+    },
 };
