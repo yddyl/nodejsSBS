@@ -81,6 +81,42 @@ var jtoArrayAvg =function (res,ret) {
         res.json(arr);
     }
 };
+var jtoArrayDist =function (res,ret) {
+    if(typeof ret === 'undefined') {
+        res.json({
+            code:'1',
+            msg: 'ret undefined'
+        });
+    }else {
+        var arr = [];
+        var data;
+        for(var t in ret) {
+            data=ret[t];
+            var dist=[];
+            var temp=[];
+            var Class;
+            var total;
+            for (var i in data) {
+                title = i;
+                content = data[i];
+                if (i != "class"&& i!="total") {
+                    var time = title;
+                    var value = content;
+                    //data[i] = {time, value};
+                    dist.push({time, value});
+                }else if(i == "class"){
+                    Class=data[i];
+                }else if(i == "total"){
+                    total=data[i];
+                }
+            }
+            temp.push({Class,total,dist});
+            console.log(dist);
+            arr.push(temp);
+        }
+        res.json(arr);
+    }
+};
 
 module.exports = {
     //BiSaiAll
@@ -262,7 +298,7 @@ module.exports = {
         pool.getConnection(function(err, connection) {
             if (err) throw err;
             connection.query($sql.chengjiDistFullByMatch,id, function(err, result) {
-                jsonWrite(res,result);
+                jtoArrayDist(res,result);
                 connection.release();
             });
         });
@@ -272,7 +308,8 @@ module.exports = {
         pool.getConnection(function(err, connection) {
             if (err) throw err;
             connection.query($sql.chengjiDistHalfByMatch,id, function(err, result) {
-                jsonWrite(res,result);
+                jtoArrayDist(res,result);
+                //jsonWrite(res,result);
                 connection.release();
             });
         });
