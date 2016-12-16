@@ -45,6 +45,14 @@ router.get('/avgPaceById', function(req, res, next) {
 router.get('/avgRecordById', function(req, res, next) {
     malasong.avgRecordById(req, res, next);
 });
+//chengjiDistFullByMatch
+router.get('/chengjiDistFullByMatch', function(req, res, next) {
+    malasong.chengjiDistFullByMatch(req, res, next);
+});
+//chengjiDistHalfByMatch
+router.get('/chengjiDistHalfByMatch', function(req, res, next) {
+    malasong.chengjiDistHalfByMatch(req, res, next);
+});
 // images: /course/20140006.png for 路线图， /logo/20140006.png for logo
 app.use(express.static('public'));
 

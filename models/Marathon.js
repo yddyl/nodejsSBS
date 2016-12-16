@@ -256,4 +256,25 @@ module.exports = {
             });
         });
     },
+    //chengjiDistFullByMatch
+    chengjiDistFullByMatch: function (req, res, next) {
+        var id =+req.query.id;
+        pool.getConnection(function(err, connection) {
+            if (err) throw err;
+            connection.query($sql.chengjiDistFullByMatch,id, function(err, result) {
+                jsonWrite(res,result);
+                connection.release();
+            });
+        });
+    },
+    chengjiDistHalfByMatch: function (req, res, next) {
+        var id =+req.query.id;
+        pool.getConnection(function(err, connection) {
+            if (err) throw err;
+            connection.query($sql.chengjiDistHalfByMatch,id, function(err, result) {
+                jsonWrite(res,result);
+                connection.release();
+            });
+        });
+    },
 };
