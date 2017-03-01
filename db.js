@@ -1,9 +1,9 @@
 module.exports = {
     mysql: {
-        host: 'sbsdatabasev1.compheoy92tk.us-west-2.rds.amazonaws.com',
-        user: 'root',
+        host: '45.56.126.245',
+        user: 'alex',
         password: 'rootroot',
-        database:'malasong',
+        database:'SBSMarathon',
         port: 3306
     }
 };

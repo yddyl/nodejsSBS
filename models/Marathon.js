@@ -2,6 +2,12 @@ var mysql = require('mysql');
 var $db = require('../db');
 var $sql = require('../sqlMapping');
 
+var db_m='SBSMarathon';
+var t_user='users';
+var t_record='records';
+var t_match='matches';
+var t_country='countries';
+
 // 使用连接池，提升性能
 var pool  = mysql.createPool( $db.mysql);
 
@@ -119,6 +125,107 @@ var jtoArrayDist =function (res,ret) {
 };
 
 module.exports = {
+	//compare
+	compare:function (req, res, next) {
+		var location = req.query.location;
+		var gender = req.query.gender;
+		var agelow = req.query.agelow;
+		var ageup = req.query.ageup;
+		var constellation = req.query.constellation;
+		var zodiac = req.query.zodiac;
+		var segment = req.query.segment;
+		var sqlQuery="";
+		if(segment){
+			switch(segment){
+				case "gender":
+					BY="auto_gender";
+					break;
+				case "location":
+					BY="auto_location";
+					break;
+				case "age":
+					BY="ELT(CEILING(auto_age/10)-1,'11-20','21-30','31-40','41-50','51-60','61-70','71-80','81-90','91-100')";
+					break;
+				case "zodiac":
+					BY="auto_zodiac";
+					break;
+				case "constellation":
+					BY="auto_constell";
+			}
+			//sqlQuery='select '+BY+' as '+segment+', count(*) as number FROM "+db_m+"."+db_m+"_ren  where id>0';		
+			sqlQuery="select a.segment as 'segment', IF(b.number IS NULL , 0, b.number) as number\
+			FROM (\
+			select "+BY+" as 'segment', count(id) as number\
+			FROM "+db_m+"."+t_user+" group by segment) a \
+			left join (\
+			select "+BY+" as 'segment', count(id) as number\
+			FROM "+db_m+"."+t_user+" where id>0 "
+		}else
+			sqlQuery="select count(*) as number FROM "+db_m+"."+t_user+" where id>0 ";
+
+		if(location)
+			sqlQuery+=" and auto_location=\'"+location+"\'";
+		if(gender)
+			sqlQuery+=" and auto_gender=\'"+gender+"\'";
+		if(agelow)
+			sqlQuery+=" and auto_age>\'"+agelow+"\'";
+		if(ageup)
+			sqlQuery+=" and auto_age<\'"+ageup+"\'";
+		if(constellation)
+			sqlQuery+=" and auto_constell=\'"+constellation+"\'";
+		if(zodiac)
+			sqlQuery+=" and auto_zodiac=\'"+zodiac+"\'";
+		if(segment)
+			sqlQuery+="group by  segment) b on b.segment =a.segment order by segment"
+			//sqlQuery+=' group by '+BY;	
+
+		console.log("Compair Query: ",sqlQuery);
+	
+        pool.getConnection(function(err, connection) {
+            if (err) throw err;
+            connection.query(sqlQuery, [segment,location,gender,agelow,ageup,constellation,zodiac], function(err, result) {
+                jsonWrite(res, result);
+                connection.release();
+            });
+        });
+    },
+	
+	//segment
+	segment:function (req, res, next) {
+		var dataBy = req.query.by;
+		switch(dataBy){
+			case "gender":
+				BY="auto_gender";
+				break;
+			case "location":
+				BY="auto_location";
+				break;
+			case "age":
+				BY="auto_age";
+				break;
+			case "zodiac":
+				BY="auto_zodiac";
+				break;
+			case "constellation":
+				BY="auto_constell";
+		}
+		if(dataBy!="age"){
+			var sqlQuery="select "+BY+" as "+dataBy+", count(*) as number FROM "+db_m+"."+t_user+" group by "+BY;
+			//select count(*) as number, auto_gender as gender FROM "+db_m+"."+t_user+" group by auto_gender
+		}else{
+			var sqlQuery="SELECT ELT(CEILING("+BY+"/10)-1,'11-20','21-30','31-40','41-50','51-60','61-70','71-80','81-90','91-100') as 'range', COUNT(*) as 'number' FROM "+db_m+"."+t_user+" GROUP BY ELT(CEILING("+BY+"/10)-1,'11-20','21-30','31-40','41-50','51-60','61-70','71-80','81-90','91-100')";
+		}
+		console.log('Compair Query: ',sqlQuery);
+        pool.getConnection(function(err, connection) {
+            if (err) throw err;
+            connection.query(sqlQuery,BY, function(err, result) {
+                jsonWrite(res, result);
+                connection.release();
+            });
+        });
+    },
+	
+	
     //BiSaiAll
     bisaiAll: function (req, res, next) {
         pool.getConnection(function(err, connection) {

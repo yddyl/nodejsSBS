@@ -9,6 +9,12 @@ router.get('/', function(req, res, next) {
 router.get('/renById', function(req, res, next) {
     malasong.renById(req, res, next);
 });
+router.get('/compare', function(req, res, next) {
+    malasong.compare(req, res, next);
+});
+router.get('/segment', function(req, res, next) {
+    malasong.segment(req, res, next);
+});
 router.get('/renByName', function(req, res, next) {
     malasong.renByName(req, res, next);
 });
