@@ -1,4 +1,4 @@
-var mysql = require('mysql');
+﻿var mysql = require('mysql');
 var $db = require('../db');
 var $sql = require('../sqlMapping');
 

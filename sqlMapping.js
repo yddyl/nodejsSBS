@@ -1,4 +1,4 @@
-var db_m='SBSMarathon';
+﻿var db_m='SBSMarathon';
 var t_user='users';
 var t_record='records';
 var t_country='countries';
